@@ -240,7 +240,7 @@ public extension DateInRegion {
 			// https://github.com/malcommac/SwiftDate/issues/346
 			return date.compare(refDate.date)
 		default:
-			return region.calendar.compare(date, to: refDate.date, toGranularity: granularity)
+			return compareByComps(to: refDate, granularity: granularity)
 		}
 	}
 
@@ -341,4 +341,96 @@ public extension DateInRegion {
         self.date.differences(in: components, from: other.date)
     }
 
+}
+
+extension DateInRegion {
+  func compareByComps(to refDate: DateInRegion, granularity: Calendar.Component) -> ComparisonResult {
+    let compsToCompate: Set<Calendar.Component> = [.era, .year, .month, .day, .hour, .minute, .second, .nanosecond]
+    let selfCopms = calendar.dateComponents(compsToCompate, from: date)
+    let refComps = refDate.region.calendar.dateComponents(compsToCompate, from: refDate.date)
+
+    if selfCopms.era > refComps.era {
+      return .orderedDescending
+    } else if selfCopms.era < refComps.era {
+      return .orderedAscending
+    } else if granularity == .era {
+      return .orderedSame
+    }
+
+    if selfCopms.year > refComps.year {
+      return .orderedDescending
+    } else if selfCopms.year < refComps.year {
+      return .orderedAscending
+    } else if granularity == .year {
+      return .orderedSame
+    }
+
+    if selfCopms.month > refComps.month {
+      return .orderedDescending
+    } else if selfCopms.month < refComps.month {
+      return .orderedAscending
+    } else if granularity == .month {
+      return .orderedSame
+    }
+
+    if selfCopms.day > refComps.day {
+      return .orderedDescending
+    } else if selfCopms.day < refComps.day {
+      return .orderedAscending
+    } else if granularity == .day {
+      return .orderedSame
+    }
+
+    if selfCopms.hour > refComps.hour {
+      return .orderedDescending
+    } else if selfCopms.hour < refComps.hour {
+      return .orderedAscending
+    } else if granularity == .hour {
+      return .orderedSame
+    }
+
+    if selfCopms.minute > refComps.minute {
+      return .orderedDescending
+    } else if selfCopms.minute < refComps.minute {
+      return .orderedAscending
+    } else if granularity == .minute {
+      return .orderedSame
+    }
+
+    if selfCopms.second > refComps.second {
+      return .orderedDescending
+    } else if selfCopms.second < refComps.second {
+      return .orderedAscending
+    } else if granularity == .second {
+      return .orderedSame
+    }
+
+    if selfCopms.nanosecond > refComps.nanosecond {
+      return .orderedDescending
+    } else if selfCopms.nanosecond < refComps.nanosecond {
+      return .orderedAscending
+    } else if granularity == .nanosecond {
+      return .orderedSame
+    }
+    return .orderedSame
+  }
+}
+
+extension Optional: Comparable where Wrapped: Comparable {
+  public static func < (lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+    if lhs == nil && rhs == nil { return false }
+    guard let lhs = lhs else { return true }
+    guard let rhs = rhs else { return false }
+    return lhs < rhs
+  }
+
+  public static func < (lhs: Wrapped?, rhs: Wrapped) -> Bool {
+    guard let lhs = lhs else { return true }
+    return lhs < rhs
+  }
+
+  public static func < (lhs: Wrapped, rhs: Wrapped?) -> Bool {
+    guard let rhs = rhs else { return false }
+    return lhs < rhs
+  }
 }
