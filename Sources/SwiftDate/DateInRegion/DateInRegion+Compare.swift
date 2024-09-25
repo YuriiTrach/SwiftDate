@@ -15,25 +15,25 @@ import Foundation
 // MARK: - Comparing DateInRegion
 
 public func == (lhs: DateInRegion, rhs: DateInRegion) -> Bool {
-    (lhs.date.timeIntervalSince1970 == rhs.date.timeIntervalSince1970)
+  lhs.compare(toDate: rhs) == .orderedSame
 }
 
 public func <= (lhs: DateInRegion, rhs: DateInRegion) -> Bool {
-	let result = lhs.date.compare(rhs.date)
+	let result = lhs.compare(toDate: rhs)
 	return (result == .orderedAscending || result == .orderedSame)
 }
 
 public func >= (lhs: DateInRegion, rhs: DateInRegion) -> Bool {
-	let result = lhs.date.compare(rhs.date)
+	let result = lhs.compare(toDate: rhs)
 	return (result == .orderedDescending || result == .orderedSame)
 }
 
 public func < (lhs: DateInRegion, rhs: DateInRegion) -> Bool {
-    lhs.date.compare(rhs.date) == .orderedAscending
+    lhs.compare(toDate: rhs) == .orderedAscending
 }
 
 public func > (lhs: DateInRegion, rhs: DateInRegion) -> Bool {
-    lhs.date.compare(rhs.date) == .orderedDescending
+    lhs.compare(toDate: rhs) == .orderedDescending
 }
 
 // The type of comparison to do against today's date or with the suplied date.
@@ -232,7 +232,7 @@ public extension DateInRegion {
 	/// - parameter date:        date to compare.
 	/// - parameter granularity: The smallest unit that must, along with all larger units
 	/// - returns: `ComparisonResult`
-	func compare(toDate refDate: DateInRegion, granularity: Calendar.Component) -> ComparisonResult {
+  func compare(toDate refDate: DateInRegion, granularity: Calendar.Component = .second) -> ComparisonResult {
 		switch granularity {
 		case .nanosecond:
 			// There is a possible rounding error using Calendar to compare two dates below the minute granularity
