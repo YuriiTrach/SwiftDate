@@ -416,21 +416,62 @@ extension DateInRegion {
   }
 }
 
-extension Optional: Comparable where Wrapped: Comparable {
-  public static func < (lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+extension Optional where Wrapped: Comparable {
+  static func < (lhs: Wrapped?, rhs: Wrapped?) -> Bool {
     if lhs == nil && rhs == nil { return false }
     guard let lhs = lhs else { return true }
     guard let rhs = rhs else { return false }
     return lhs < rhs
   }
 
-  public static func < (lhs: Wrapped?, rhs: Wrapped) -> Bool {
+  static func < (lhs: Wrapped?, rhs: Wrapped) -> Bool {
     guard let lhs = lhs else { return true }
     return lhs < rhs
   }
 
-  public static func < (lhs: Wrapped, rhs: Wrapped?) -> Bool {
+  static func < (lhs: Wrapped, rhs: Wrapped?) -> Bool {
     guard let rhs = rhs else { return false }
     return lhs < rhs
+  }
+
+  static func <= (lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+    if lhs == nil && rhs == nil { return true }
+    guard let lhs = lhs else { return true }
+    guard let rhs = rhs else { return false }
+    return lhs <= rhs
+  }
+
+  static func <= (lhs: Wrapped?, rhs: Wrapped) -> Bool {
+    guard let lhs = lhs else { return true }
+    return lhs <= rhs
+  }
+
+  static func <= (lhs: Wrapped, rhs: Wrapped?) -> Bool {
+    guard let rhs = rhs else { return false }
+    return lhs <= rhs
+  }
+
+  static func > (lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+    return !(lhs <= rhs)
+  }
+
+  static func > (lhs: Wrapped?, rhs: Wrapped) -> Bool {
+    return !(lhs <= rhs)
+  }
+
+  static func > (lhs: Wrapped, rhs: Wrapped?) -> Bool {
+    return !(lhs <= rhs)
+  }
+
+  static func >= (lhs: Wrapped?, rhs: Wrapped?) -> Bool {
+    return !(lhs < rhs)
+  }
+
+  static func >= (lhs: Wrapped?, rhs: Wrapped) -> Bool {
+    return !(lhs < rhs)
+  }
+
+  static func >= (lhs: Wrapped, rhs: Wrapped?) -> Bool {
+    return !(lhs < rhs)
   }
 }
